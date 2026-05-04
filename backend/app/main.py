@@ -108,6 +108,29 @@ async def health_check():
     }
 
 
+# Catch-all route for React Router
+@app.get("/{path:path}")
+async def catch_all(path: str):
+    """Serve React app for all non-API routes"""
+    # Check if it's an API route
+    if path.startswith("api/") or path.startswith("docs") or path.startswith("redoc") or path.startswith("static") or path.startswith("media"):
+        # Let FastAPI handle these routes
+        return JSONResponse(
+            status_code=404,
+            content={"detail": "Resource not found"}
+        )
+    
+    # For all other routes, serve the React app
+    try:
+        from fastapi.responses import FileResponse
+        return FileResponse("static/index.html")
+    except Exception:
+        return JSONResponse(
+            status_code=404,
+            content={"detail": "React app not found"}
+        )
+
+
 # Include routers
 app.include_router(simple_auth.router, prefix="/api/auth", tags=["authentication"])
 app.include_router(email.router, prefix="/api/email", tags=["email"])

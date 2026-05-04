@@ -9,9 +9,8 @@ from contextlib import asynccontextmanager
 
 from app.config import settings
 # from app.database import init_db, close_db
-from app.routers import events, tickets, payments
+from app.routers import events, tickets, payments, auth
 from app.api import email
-import simple_auth
 # from app.middleware.rate_limit import RateLimitMiddleware
 
 
@@ -124,7 +123,7 @@ async def health_check():
 
 
 # Include routers
-app.include_router(simple_auth.router, prefix="/api/auth", tags=["authentication"])
+app.include_router(auth.router, prefix="/api/auth", tags=["authentication"])
 app.include_router(email.router, prefix="/api/email", tags=["email"])
 # app.include_router(events.router, prefix="/api/events", tags=["events"])
 # app.include_router(tickets.router, prefix="/api/tickets", tags=["tickets"])

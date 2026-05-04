@@ -1,7 +1,29 @@
 # Placeholder Dockerfile for Render
 # This allows Render to clone the repository successfully
-# The actual deployment will use manual setup
+# The actual deployment will# Single Server Dockerfile - Frontend + Backend on Port 8000
+FROM python:3.11-slim
 
-FROM alpine:latest
-LABEL maintainer="Event Booking System"
-CMD ["echo", "Repository cloned successfully - use manual setup"]
+# Set working directory
+WORKDIR /app
+
+# Install backend dependencies
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Build frontend
+COPY frontend/ /frontend/
+WORKDIR /frontend
+RUN npm install && npm run build
+
+# Copy frontend build to backend static directory
+WORKDIR /app
+RUN cp -r /frontend/dist /app/static/
+
+# Copy backend code
+COPY backend/ /app/
+
+# Expose port 8000
+EXPOSE 8000
+
+# Start FastAPI server
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, Numeric, ForeignKey, JSON
-from sqlalchemy.dialects.postgresql import UUID, ARRAY
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import uuid
@@ -28,8 +27,8 @@ class EventType(enum.Enum):
 class Event(Base):
     __tablename__ = "events"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    organizer_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    organizer_id = Column(String(36), ForeignKey("users.id"), nullable=False)
     
     # Basic Info
     title = Column(String(200), nullable=False)
@@ -67,7 +66,7 @@ class Event(Base):
     banner_image_url = Column(String(500))
     
     # Additional Info
-    tags = Column(ARRAY(String))
+    tags = Column(JSON)  # Use JSON for SQLite compatibility
     age_restriction = Column(String(20))
     accessibility_info = Column(Text)
     terms_and_conditions = Column(Text)

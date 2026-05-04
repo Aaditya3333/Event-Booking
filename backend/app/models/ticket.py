@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, Numeric, ForeignKey, JSON, CheckConstraint
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import uuid
@@ -28,8 +27,8 @@ class TicketStatus(enum.Enum):
 class TicketTier(Base):
     __tablename__ = "ticket_tiers"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    event_id = Column(UUID(as_uuid=True), ForeignKey("events.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    event_id = Column(String(36), ForeignKey("events.id"), nullable=False)
     
     # Basic Info
     name = Column(String(100), nullable=False)
@@ -84,9 +83,9 @@ class TicketTier(Base):
 class Ticket(Base):
     __tablename__ = "tickets"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    ticket_tier_id = Column(UUID(as_uuid=True), ForeignKey("ticket_tiers.id"), nullable=False)
-    booking_id = Column(UUID(as_uuid=True), ForeignKey("bookings.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    ticket_tier_id = Column(String(36), ForeignKey("ticket_tiers.id"), nullable=False)
+    booking_id = Column(String(36), ForeignKey("bookings.id"), nullable=False)
     
     # Ticket Info
     ticket_number = Column(String(50), unique=True, nullable=False, index=True)
@@ -101,7 +100,7 @@ class Ticket(Base):
     is_valid = Column(Boolean, default=True)
     is_used = Column(Boolean, default=False)
     checked_in_at = Column(DateTime(timezone=True))
-    checked_in_by = Column(UUID(as_uuid=True), ForeignKey("users.id"))
+    checked_in_by = Column(String(36), ForeignKey("users.id"))
     
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())

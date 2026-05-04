@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, ForeignKey, JSON
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import uuid
@@ -19,9 +18,9 @@ class CheckInStatus(enum.Enum):
 class CheckIn(Base):
     __tablename__ = "checkins"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    ticket_id = Column(UUID(as_uuid=True), ForeignKey("tickets.id"), nullable=False)
-    checked_in_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    ticket_id = Column(String(36), ForeignKey("tickets.id"), nullable=False)
+    checked_in_by = Column(String(36), ForeignKey("users.id"), nullable=False)
     
     # Check-in Details
     status = Column(String(20), default=CheckInStatus.SUCCESSFUL.value)

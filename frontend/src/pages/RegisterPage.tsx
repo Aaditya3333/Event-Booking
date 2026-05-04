@@ -41,7 +41,12 @@ export function RegisterPage() {
         navigate('/')
       }, 2000)
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Registration failed')
+      console.error('Registration error:', err)
+      const errorMessage = err.response?.data?.detail || 
+                          err.response?.data?.message || 
+                          err.message || 
+                          'Registration failed. Please try again.'
+      setError(errorMessage)
     } finally {
       setIsLoading(false)
     }

@@ -77,9 +77,9 @@ class Booking(Base):
 class BookingItem(Base):
     __tablename__ = "booking_items"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    booking_id = Column(UUID(as_uuid=True), ForeignKey("bookings.id"), nullable=False)
-    ticket_tier_id = Column(UUID(as_uuid=True), ForeignKey("ticket_tiers.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    booking_id = Column(String(36), ForeignKey("bookings.id"), nullable=False)
+    ticket_tier_id = Column(String(36), ForeignKey("ticket_tiers.id"), nullable=False)
     
     # Item Details
     quantity = Column(Integer, nullable=False)

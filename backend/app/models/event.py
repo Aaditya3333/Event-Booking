@@ -103,8 +103,8 @@ class Event(Base):
 class EventImage(Base):
     __tablename__ = "event_images"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    event_id = Column(UUID(as_uuid=True), ForeignKey("events.id"), nullable=False)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    event_id = Column(String(36), ForeignKey("events.id"), nullable=False)
     
     url = Column(String(500), nullable=False)
     alt_text = Column(String(200))

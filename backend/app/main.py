@@ -41,7 +41,7 @@ app.add_middleware(
 # Trusted host middleware
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["localhost", "127.0.0.1", "*.eventbooking.com"]
+    allowed_hosts=["localhost", "127.0.0.1", "*.eventbooking.com", "*.onrender.com"]
 )
 
 # Rate limiting middleware - disabled for now

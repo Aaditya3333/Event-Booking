@@ -89,7 +89,7 @@ async def internal_error_handler(request: Request, exc):
     )
 
 
-@app.get("/")
+@app.get("/api")
 async def root():
     return {
         "message": "Event Booking System API",

@@ -128,6 +128,15 @@ async def health_check():
     }
 
 
+@app.get("/api/health")
+async def api_health_check():
+    return {
+        "status": "api_healthy",
+        "version": settings.app_version,
+        "timestamp": time.time()
+    }
+
+
 # Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["authentication"])
 app.include_router(email.router, prefix="/api/email", tags=["email"])

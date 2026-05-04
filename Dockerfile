@@ -29,6 +29,9 @@ RUN cp -r /frontend/dist /app/static/
 # Copy backend code
 COPY backend/ /app/
 
+# Create media directory
+RUN mkdir -p /app/media
+
 # Expose port 8000
 EXPOSE 8000
 

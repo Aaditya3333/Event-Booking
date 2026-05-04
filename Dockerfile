@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Build frontend
 COPY frontend/ /frontend/
 WORKDIR /frontend
-RUN npm install && npm run build
+RUN npm install && npx vite build --mode production
 
 # Copy frontend build to backend static directory
 WORKDIR /app

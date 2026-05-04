@@ -19,42 +19,60 @@ async def register(
     db: AsyncSession = Depends(get_db)
 ):
     """Register a new user"""
+    import logging
+    logger = logging.getLogger(__name__)
     
-    # Check if user already exists
-    stmt = select(User).where(
-        (User.email == user_data.email) | (User.username == user_data.username)
-    )
-    result = await db.execute(stmt)
-    existing_user = result.scalar_one_or_none()
-    
-    if existing_user:
-        if existing_user.email == user_data.email:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Email already registered"
-            )
-        else:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Username already taken"
-            )
-    
-    # Create new user
-    hashed_password = jwt_handler.get_password_hash(user_data.password)
-    user = User(
-        email=user_data.email,
-        username=user_data.username,
-        full_name=user_data.full_name,
-        password_hash=hashed_password,
-        phone=user_data.phone,
-        bio=user_data.bio,
-        avatar_url=user_data.avatar_url,
-    )
-    
-    db.add(user)
-    await db.commit()
-    await db.refresh(user)
-    return user
+    try:
+        logger.info(f"Registration attempt for email: {user_data.email}")
+        
+        # Check if user already exists
+        stmt = select(User).where(
+            (User.email == user_data.email) | (User.username == user_data.username)
+        )
+        result = await db.execute(stmt)
+        existing_user = result.scalar_one_or_none()
+        
+        if existing_user:
+            if existing_user.email == user_data.email:
+                logger.warning(f"Email already registered: {user_data.email}")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Email already registered"
+                )
+            else:
+                logger.warning(f"Username already taken: {user_data.username}")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Username already taken"
+                )
+        
+        # Create new user
+        logger.info("Creating new user...")
+        hashed_password = jwt_handler.get_password_hash(user_data.password)
+        user = User(
+            email=user_data.email,
+            username=user_data.username,
+            full_name=user_data.full_name,
+            password_hash=hashed_password,
+            phone=user_data.phone,
+            bio=user_data.bio,
+            avatar_url=user_data.avatar_url,
+        )
+        
+        db.add(user)
+        await db.commit()
+        await db.refresh(user)
+        logger.info(f"User created successfully: {user.id}")
+        return user
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Registration failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Registration failed: {str(e)}"
+        )
 
 @router.post("/login", response_model=Token)
 async def login(
@@ -98,7 +116,6 @@ async def login(
         "token_type": "bearer",
         "expires_in": settings.access_token_expire_minutes * 60
     }
-
 
 @router.get("/me", response_model=UserResponse)
 async def get_current_user_info(

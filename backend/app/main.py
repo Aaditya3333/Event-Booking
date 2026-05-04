@@ -46,10 +46,16 @@ app.add_middleware(
 
 # Rate limiting middleware - disabled for now
 # app.add_middleware(RateLimitMiddleware)
-
 # Static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.mount("/media", StaticFiles(directory="media"), name="media")
+
+# Serve frontend static files
+try:
+    app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="frontend")
+except Exception:
+    # Fallback if frontend not built
+    pass
 
 
 @app.middleware("http")

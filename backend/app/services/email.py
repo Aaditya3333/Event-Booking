@@ -1,7 +1,6 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from email.mime.html import MIMEText as HTMLMIMEText
 from typing import Optional
 import os
 

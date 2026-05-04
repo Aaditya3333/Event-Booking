@@ -31,8 +31,8 @@ email-validator==2.1.0
 # Environment variables
 python-dotenv==1.0.0
 
-# CORS
-python-cors==4.0.0
+# CORS - Using FastAPI built-in instead
+# python-cors==4.0.0
 
 # Date/time handling
 python-dateutil==2.8.2

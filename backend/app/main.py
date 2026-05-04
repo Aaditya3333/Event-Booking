@@ -52,7 +52,7 @@ app.mount("/media", StaticFiles(directory="media"), name="media")
 
 # Serve frontend static files
 try:
-    app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="frontend")
+    app.mount("/", StaticFiles(directory="static", html=True), name="frontend")
 except Exception:
     # Fallback if frontend not built
     pass

@@ -16,7 +16,13 @@ from app.api import email
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup - using simple auth, no database needed
+    # Startup - create database tables
+    from app.database import engine, Base
+    from app.models import user, event, ticket, payment  # Import all models
+    
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    
     yield
     # Shutdown
 

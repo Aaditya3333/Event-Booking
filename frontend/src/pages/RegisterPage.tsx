@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import apiClient from '../services/api'
 
 export function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -28,32 +29,19 @@ export function RegisterPage() {
     setSuccess(false)
 
     try {
-      const response = await fetch('http://localhost:8000/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        setSuccess(true)
-        
-        // Store tokens and user data
-        localStorage.setItem('access_token', data.access_token)
-        localStorage.setItem('user', JSON.stringify(data.user))
-        
-        // Redirect to home page after 2 seconds
-        setTimeout(() => {
-          navigate('/')
-        }, 2000)
-      } else {
-        const errorData = await response.json()
-        setError(errorData.detail || 'Registration failed')
-      }
-    } catch (err) {
-      setError('Network error. Please try again.')
+      const data = await apiClient.register(formData)
+      setSuccess(true)
+      
+      // Store tokens and user data
+      localStorage.setItem('access_token', data.access_token)
+      localStorage.setItem('user', JSON.stringify(data.user))
+      
+      // Redirect to home page after 2 seconds
+      setTimeout(() => {
+        navigate('/')
+      }, 2000)
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Registration failed')
     } finally {
       setIsLoading(false)
     }

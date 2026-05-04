@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import apiClient from '../services/api'
 
 export function LoginPage() {
   const [formData, setFormData] = useState({
@@ -23,29 +24,16 @@ export function LoginPage() {
     setError('')
 
     try {
-      const response = await fetch('http://localhost:8000/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        
-        // Store tokens and user data
-        localStorage.setItem('access_token', data.access_token)
-        localStorage.setItem('user', JSON.stringify(data.user))
-        
-        // Redirect to home page
-        navigate('/')
-      } else {
-        const errorData = await response.json()
-        setError(errorData.detail || 'Login failed')
-      }
-    } catch (err) {
-      setError('Network error. Please try again.')
+      const data = await apiClient.login(formData.email, formData.password)
+      
+      // Store tokens and user data
+      localStorage.setItem('access_token', data.access_token)
+      localStorage.setItem('user', JSON.stringify(data.user))
+      
+      // Redirect to home page
+      navigate('/')
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Login failed')
     } finally {
       setIsLoading(false)
     }

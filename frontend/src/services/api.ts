@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 import toast from 'react-hot-toast'
 
-const API_BASE_URL = (import.meta as any).env.VITE_API_URL || 'http://localhost:8000'
+const API_BASE_URL = (import.meta as any).env.VITE_API_URL || ''
 
 class ApiClient {
   private client: AxiosInstance

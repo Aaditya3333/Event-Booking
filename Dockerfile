@@ -3,6 +3,12 @@
 # The actual deployment will# Single Server Dockerfile - Frontend + Backend on Port 8000
 FROM python:3.11-slim
 
+# Install Node.js for frontend build
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get update && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
 # Set working directory
 WORKDIR /app
 
